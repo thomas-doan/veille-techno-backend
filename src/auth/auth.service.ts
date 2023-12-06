@@ -19,6 +19,8 @@ export class AuthService {
   async signupLocal(dto: AuthDto): Promise<Tokens> {
     const hash = await argon.hash(dto.password);
 
+    const roleAssignUser = await this.getidRoleUser();
+
     const user = await this.prisma.user
       .create({
         data: {
@@ -27,6 +29,7 @@ export class AuthService {
           firstName: dto.firstName,
           lastName: dto.lastName,
           password: hash,
+          roleIdFk: roleAssignUser,
         },
       })
       .catch((error) => {
@@ -38,7 +41,21 @@ export class AuthService {
         throw error;
       });
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const checkRole = await this.prisma.user.findUnique({
+      where: {
+        email : dto.email,
+      },
+      select: {
+        roles: {
+          select: {
+            role: true,
+          },
+        },
+      },
+    });
+
+ 
+    const tokens = await this.getTokens(user.id, user.email, checkRole?.roles?.role);
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     return tokens;
@@ -56,7 +73,20 @@ export class AuthService {
     const passwordMatches = await argon.verify(user.hash, dto.password);
     if (!passwordMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const checkRole = await this.prisma.user.findUnique({
+      where: {
+        email : dto.email,
+      },
+      select: {
+        roles: {
+          select: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    const tokens = await this.getTokens(user.id, user.email, checkRole?.roles?.role);
     await this.updateRtHash(user.id, tokens.refresh_token);
 
     return tokens;
@@ -106,11 +136,11 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: string, email: string): Promise<Tokens> {
+  async getTokens(userId: string, email: string, role? :string): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
       sub: userId,
       email: email,
-      role: 'user',
+      roles: role,
     };
 
     const [at, rt] = await Promise.all([
@@ -128,5 +158,20 @@ export class AuthService {
       access_token: at,
       refresh_token: rt,
     };
+  }
+
+  async getidRoleUser(): Promise<string> {
+    const roleIdAssignUser = await this.prisma.role.findFirst({
+      where: {
+        role: 'USER',
+      },
+      select: {
+        idRole: true,
+      },
+    });
+
+    if (!roleIdAssignUser) throw new ForbiddenException('Not found role');
+
+    return roleIdAssignUser.idRole;
   }
 }
