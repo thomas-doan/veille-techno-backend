@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  idRole String @id @default(uuid())
+  role   String
+  users  User[]
+}
+
+model User {
+  id    String    @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+   hash     String
+  hashedRt String?
+  roles     Role?     @relation(fields: [roleIdFk], references: [idRole])
+  roleIdFk  String?
+  Colonne   Colonne[]
+    @@map("users")
+}
+
+model Cartes {
+  idCarte     String @id @default(uuid())
+  titre       String
+  description String
+  status      String
+  Colonne Colonne[]
+}
+
+model Colonne {
+  idStepOne String  @id @default(uuid())
+  users     User?   @relation(fields: [userIdFk], references: [id])
+  userIdFk  String?
+  cartes    Cartes? @relation(fields: [carteIdFk], references: [idCarte])
+  carteIdFk String?
+  titre     String
+}
