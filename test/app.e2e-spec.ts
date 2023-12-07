@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
     await app.init();
 
     prisma = app.get<PrismaService>(PrismaService);
-    await prisma.cleanDatabase();
+    await prisma.cleanDatabase();  
   });
 
   afterAll(async () => {
@@ -30,14 +30,16 @@ describe('AppController (e2e)', () => {
   describe('Auth', () => {
     const dto: AuthDto = {
       email: 'test@gmail.com',
-      password: 'super-secret-password',
+      password: 'totoro',
+      firstName: 'toto',
+      lastName: 'toto',
     };
 
     let tokens: Tokens;
 
     it('should signup', () => {
       return request(app.getHttpServer())
-        .post('/auth/local/signup')
+        .post('/auth/api/signup')
         .send(dto)
         .expect(201)
         .expect(({ body }: { body: Tokens }) => {
@@ -47,7 +49,7 @@ describe('AppController (e2e)', () => {
     });
     it('should signin', () => {
       return request(app.getHttpServer())
-        .post('/auth/local/signin')
+        .post('/auth/api/signin')
         .send(dto)
         .expect(200)
         .expect(({ body }: { body: Tokens }) => {

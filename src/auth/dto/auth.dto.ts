@@ -23,5 +23,5 @@ export class AuthDto {
   lastName: string;
 
   @ApiProperty()
-  roleIdFk: string;
+  roleIdFk?: string;
 }
