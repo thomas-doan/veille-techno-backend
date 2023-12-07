@@ -37,7 +37,7 @@ model Cartes {
   titre       String
   description String
   status      String
-  colonnes    Colonne? @relation(fields: [colonneIdFk], references: [idColonne])
+  colonnes    Colonne? @relation(fields: [colonneIdFk], references: [idColonne], onDelete: Cascade)
   colonneIdFk String?
 }
 
