@@ -37,14 +37,14 @@ model Cartes {
   titre       String
   description String
   status      String
-  Colonne Colonne[]
+  colonnes    Colonne? @relation(fields: [colonneIdFk], references: [idColonne])
+  colonneIdFk String?
 }
 
 model Colonne {
-  idStepOne String  @id @default(uuid())
+  idColonne String  @id @default(uuid())
   users     User?   @relation(fields: [userIdFk], references: [id])
   userIdFk  String?
-  cartes    Cartes? @relation(fields: [carteIdFk], references: [idCarte])
-  carteIdFk String?
   titre     String
+  cartes    Cartes[]
 }
