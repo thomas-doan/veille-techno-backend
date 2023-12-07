@@ -8,7 +8,9 @@ import { Tokens } from '../../types';
 
 const user = {
   email: 'test@gmail.com',
-  password: 'super-secret-password',
+  password: 'totoro',
+  firstName: 'toto',
+  lastName: 'toto',
 };
 
 describe('Auth Flow', () => {
@@ -38,6 +40,8 @@ describe('Auth Flow', () => {
       const tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
 
       expect(tokens.access_token).toBeTruthy();
@@ -50,6 +54,8 @@ describe('Auth Flow', () => {
         tokens = await authService.signupLocal({
           email: user.email,
           password: user.password,
+          lastName: user.lastName,
+          firstName: user.firstName,
         });
       } catch (error) {
         expect(error.status).toBe(403);
@@ -81,6 +87,8 @@ describe('Auth Flow', () => {
       await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
 
       const tokens = await authService.signinLocal({
@@ -113,7 +121,7 @@ describe('Auth Flow', () => {
     });
 
     it('should pass if call to non existent user', async () => {
-      const result = await authService.logout(4);
+      const result = await authService.logout('zedz');
       expect(result).toBeDefined();
     });
 
@@ -121,6 +129,8 @@ describe('Auth Flow', () => {
       await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
 
       let userFromDb: User | null;
@@ -153,7 +163,7 @@ describe('Auth Flow', () => {
     it('should throw if no existing user', async () => {
       let tokens: Tokens | undefined;
       try {
-        tokens = await authService.refreshTokens(1, '');
+        tokens = await authService.refreshTokens('fezfez', '');
       } catch (error) {
         expect(error.status).toBe(403);
       }
@@ -166,6 +176,8 @@ describe('Auth Flow', () => {
       const _tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
 
       const rt = _tokens.refresh_token;
@@ -174,7 +186,7 @@ describe('Auth Flow', () => {
       // also possible to get using prisma like above
       // but since we have the rt already, why not just decoding it
       const decoded = decode(rt);
-      const userId = Number(decoded?.sub);
+      const userId = String(decoded?.sub);
 
       // logout the user so the hashedRt is set to null
       await authService.logout(userId);
@@ -195,6 +207,8 @@ describe('Auth Flow', () => {
       const _tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
       console.log({
         _tokens,
@@ -203,7 +217,7 @@ describe('Auth Flow', () => {
       const rt = _tokens.refresh_token;
 
       const decoded = decode(rt);
-      const userId = Number(decoded?.sub);
+         const userId = String(decoded?.sub);
 
       let tokens: Tokens | undefined;
       try {
@@ -221,13 +235,15 @@ describe('Auth Flow', () => {
       const _tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
+        lastName: user.lastName,
+        firstName: user.firstName,
       });
 
       const rt = _tokens.refresh_token;
       const at = _tokens.access_token;
 
       const decoded = decode(rt);
-      const userId = Number(decoded?.sub);
+         const userId = String(decoded?.sub);
 
       // since jwt uses seconds signature we need to wait for 1 second to have new jwts
       await new Promise((resolve, reject) => {
