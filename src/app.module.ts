@@ -5,9 +5,12 @@ import { AuthModule } from './auth/auth.module';
 import { AtGuard } from './shared/guards';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { ColonneModule } from './colonne/colonne.module';
+import { CarteModule } from './carte/carte.module';
+
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, UserModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, UserModule, ColonneModule, CarteModule],
   providers: [
     {
       provide: APP_GUARD,

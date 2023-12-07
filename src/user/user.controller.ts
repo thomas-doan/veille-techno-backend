@@ -11,11 +11,6 @@ import { RolesGuard } from '../shared/guards';
 @Controller('api')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
  
   @HasRoles(Role.ADMIN)
   @Get('users')

@@ -12,10 +12,6 @@ export class UserService {
     private prisma: PrismaService,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
   findAll() {
     try {
       const users = this.prisma.user.findMany();
