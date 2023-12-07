@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { Public, GetCurrentUserId, GetCurrentUser, HasRoles } from '../common/decorators';
-import { AtGuard, RtGuard } from '../common/guards';
+import { Public, GetCurrentUserId, GetCurrentUser, HasRoles } from '../shared/decorators';
+import { AtGuard, RolesGuard, RtGuard } from '../shared/guards';
 import { AuthService } from './auth.service';
 import { AuthDto, SignInDto } from './dto';
 import { Tokens } from './types';
@@ -26,21 +26,14 @@ export class AuthController {
     return this.authService.signupLocal(dto);
   }
 
-
-  @UseGuards(AtGuard)
-  @HasRoles(Role.USER)
-  @Get('test')
-  test() {
-    return 'ok';
-  }
-
   @Public()
   @Post('local/signin')
   @HttpCode(HttpStatus.OK)
   signinLocal(@Body() dto: SignInDto): Promise<Tokens> {
     return this.authService.signinLocal(dto);
   }
-
+  
+  @UseGuards(AtGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@GetCurrentUserId() userId: string): Promise<boolean> {
