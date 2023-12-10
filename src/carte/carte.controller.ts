@@ -19,12 +19,12 @@ export class CarteController {
     return this.carteService.create(createCarteDto);
   }
 
-  @Patch(':idCarte')
+  @Patch('/cartes/:idCarte')
   update(@Param('idCarte') idCarte: string, @Body() updateCarteDto: UpdateCarteDto) {
     return this.carteService.update(idCarte, updateCarteDto);
   }
 
-  @Delete(':idCarte')
+  @Delete('cartes/:idCarte')
   remove(@Param('idCarte') idCarte: string) {
     return this.carteService.remove(idCarte);
   }
