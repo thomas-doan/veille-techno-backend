@@ -142,7 +142,7 @@ describe('Auth Flow', () => {
       });
       expect(userFromDb?.hashedRt).toBeTruthy();
 
-      // logout
+
       await authService.logout(userFromDb!.id);
 
       userFromDb = await prisma.user.findFirst({
@@ -172,7 +172,7 @@ describe('Auth Flow', () => {
     });
 
     it('should throw if user logged out', async () => {
-      // signup and save refresh token
+
       const _tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
@@ -182,13 +182,11 @@ describe('Auth Flow', () => {
 
       const rt = _tokens.refresh_token;
 
-      // get user id from refresh token
-      // also possible to get using prisma like above
-      // but since we have the rt already, why not just decoding it
+  
       const decoded = decode(rt);
       const userId = String(decoded?.sub);
 
-      // logout the user so the hashedRt is set to null
+   
       await authService.logout(userId);
 
       let tokens: Tokens | undefined;
@@ -231,7 +229,7 @@ describe('Auth Flow', () => {
 
     it('should refresh tokens', async () => {
       await prisma.cleanDatabase();
-      // log in the user again and save rt + at
+
       const _tokens = await authService.signupLocal({
         email: user.email,
         password: user.password,
@@ -245,7 +243,6 @@ describe('Auth Flow', () => {
       const decoded = decode(rt);
          const userId = String(decoded?.sub);
 
-      // since jwt uses seconds signature we need to wait for 1 second to have new jwts
       await new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve(true);
@@ -255,7 +252,7 @@ describe('Auth Flow', () => {
       const tokens = await authService.refreshTokens(userId, rt);
       expect(tokens).toBeDefined();
 
-      // refreshed tokens should be different
+
       expect(tokens.access_token).not.toBe(at);
       expect(tokens.refresh_token).not.toBe(rt);
     });

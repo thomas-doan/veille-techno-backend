@@ -1,8 +1,18 @@
 api back project kanban thomas doan
 
-Pour lancer le projet il faut run une migration de la base de donnée :
+npm i 
 
-npx prisma migrate dev
+Pour lancer le projet il faut créer vos fichiers env, env.test et run une migration de la base de donnée :
+
+pour les 2 fichiers il faut ecrire : 
+
+DATABASE_URL="VOTRE URL"
+AT_SECRET=totoro
+RT_SECRET=dodobo
+
+commande de migration a realiser dans le dossier Prisma ou ce trouve le dossier Migrations: 
+
+- npx prisma migrate dev
 
 Après les migrations vous pouvez créer un utilisateur qui est de role USER.
 
@@ -12,7 +22,9 @@ le back est sur le port 3333
 
 l'API HATEOAS est sur la route api/users
 
-Pour initialiser les test npm test 
+Pour initialiser les test de Auth :
+
+-  npm test 
 
 Pour run la doc Swagger 
 
